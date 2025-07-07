@@ -5,6 +5,19 @@ function [TestInfo] = getThrustTestNames(fileLoc)
 % This function is not meant to be modified by the students and is simply
 % meant to organize the data for their usage
 
+% ensure directory actually exists
+if ~isfolder(fileLoc)
+    error('getThrustTestNames:NoFolder', ...
+          'Folder not found: %s', fileLoc);
+end
+
+% list all files with “Test” in the name (adjust wildcard if you need extensions)
+listing = dir(fullfile(fileLoc,'*Test*'));
+if isempty(listing)
+    error('getThrustTestNames:NoFiles', ...
+          'No files matching "*Test*" in %s', fileLoc);
+end
+
 list = dir([fileLoc, '*Test*']); % This lists all files in fileLoc with 'Test" in the file name
 numFiles = length(list);
 waterVol = zeros(numFiles, 1);

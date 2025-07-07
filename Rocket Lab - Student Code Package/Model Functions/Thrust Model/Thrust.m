@@ -31,12 +31,12 @@ fileLoc_1pt25L = 'Model Functions/Thrust Model/Static Test Stand Data/1250mL Bot
 testInfo_2L = getThrustTestNames(fileLoc_2L);
 configs_2L = unique(testInfo_2L.waterVol);
 numConfigs_2L = length(configs_2L);
-
-testInfo_1pt25L = getThrustTestNames(fileLoc_1pt25L);
-configs_1pt25L = unique(testInfo_1pt25L.waterVol);
-numConfigs_1pt25L = length(configs_1pt25L);
-
-numConfigs = numConfigs_2L + numConfigs_1pt25L;
+numConfigs = numConfigs_2L;
+% testInfo_1pt25L = getThrustTestNames(fileLoc_1pt25L);
+% configs_1pt25L = unique(testInfo_1pt25L.waterVol);
+% numConfigs_1pt25L = length(configs_1pt25L);
+% 
+% numConfigs = numConfigs_2L + numConfigs_1pt25L;
 
 % Set known sampling frequency
 f = 1652; % [Hz]
@@ -56,18 +56,18 @@ for N = 1:numConfigs % use upper case N to distiguish that it is counting someth
         testIndexes = find(testInfo_2L.waterVol == waterSize); % finds the index of the relavant tests
         numTests = length(testIndexes); % finds the number of tests performed
         testNames = testInfo_2L.fileNames(testIndexes, :); % pulls all of the test names of interest, weird indexing is due to string arrays
-    else
-        bottleSize = '1250'; % [ml]
-        waterSize = configs_1pt25L(N-numConfigs_2L);
-        testIndexes = find(testInfo_1pt25L.waterVol == waterSize); % finds the index of the relavant tests
-        numTests = length(testIndexes); % finds the number of tests performed
-        testNames = testInfo_1pt25L.fileNames(testIndexes, :); % pulls all of the test names of interest, weird indexing is due to string arrays
+    % else
+    %     bottleSize = '1250'; % [ml]
+    %     waterSize = configs_1pt25L(N-numConfigs_2L);
+    %     testIndexes = find(testInfo_1pt25L.waterVol == waterSize); % finds the index of the relavant tests
+    %     numTests = length(testIndexes); % finds the number of tests performed
+    %     testNames = testInfo_1pt25L.fileNames(testIndexes, :); % pulls all of the test names of interest, weird indexing is due to string arrays
     end
 
     % /////////////////////////////////////////////////////////////////////////
     % MODIFY THIS SECTION
     % /////////////////////////////////////////////////////////////////////////
-    SampleRate = 1652; % S/s
+    sampleRate = 1652; % S/s
     numDiscard = 0; % make a counter to count how mant data sets we throw away for a given configuration
     configMean = zeros(1, 750); % re-zero for each configuration
     configSTD = zeros(1, 750); % re-zero for each configuration
