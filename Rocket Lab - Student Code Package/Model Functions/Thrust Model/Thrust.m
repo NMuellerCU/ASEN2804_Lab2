@@ -67,6 +67,7 @@ for N = 1:numConfigs % use upper case N to distiguish that it is counting someth
     % /////////////////////////////////////////////////////////////////////////
     % MODIFY THIS SECTION
     % /////////////////////////////////////////////////////////////////////////
+    SampleRate = 1652; % S/s
     numDiscard = 0; % make a counter to count how mant data sets we throw away for a given configuration
     configMean = zeros(1, 750); % re-zero for each configuration
     configSTD = zeros(1, 750); % re-zero for each configuration
@@ -87,7 +88,7 @@ for N = 1:numConfigs % use upper case N to distiguish that it is counting someth
         %% Data Conditioning
         % Find ending offset
         offset = data(mean(end-100:end));
-        front_cut = ; % number of data points from the start to cutoff
+        front_cut = 1000; % number of data points from the start to cutoff
         if offset < front_cut && offset > 0 % Check that the offset is reasonable, if not just skip the data set by not entering the loop
             % Force negative data to be 0 since that is unphysical
             data(data <= 0) = 0;
@@ -96,14 +97,16 @@ for N = 1:numConfigs % use upper case N to distiguish that it is counting someth
             % data(isnan(data)) = 0; % also set nan to 0
 
             % Find the index of max thrust
-            [~,iMax] = ;
+            [~,iMax] = max(data);
 
             % Find start of test - defined by 5 samples before last sample below 10N prior to max
-            iStart = ; % Find first sample above or equal to 10N before max
-            data = ; % Truncate data to begin at the start of the test - note that this means our max index is now wrong
-
+            %explanation for group: finds 
+            iStart = find(data(1:iMax) > 10, 1, "first"); % Find first sample above or equal to 10N before max
+            data = data(iStart:end); % Truncate data to begin at the start of the test - note that this means our max index is now wrong
+            iMaxNew = iMax - iStart + 1; %new index for max thrust index
             % Trim the data to about 0.5 seconds
-            data = ;
+            halfSecSampRate = 0.5 * sampleRate;% need to add round around this if we chose an odd sample rate
+            data = data(1:min(halfSecSampRate, numel(data))); % makes the data either the half sec in sample rate, or what it already was, depeking on whats less
 
             % Find ending offset
             offset = mean(data(end-100:end));
@@ -114,7 +117,7 @@ for N = 1:numConfigs % use upper case N to distiguish that it is counting someth
             data = data(1:iEnd);
 
             % Find total test time
-            testTime = ;
+            testTime = numel(data)./sampleRate;
 
             % Apply linear offset that implies constant mass loss
             data = data - offset*linspace(0, 1, length(data))';
@@ -184,14 +187,14 @@ for N = 1:numConfigs % use upper case N to distiguish that it is counting someth
 
     %% Data Fitting
     % Fit thrust rise (start --> max)
-    power1 = ; % degree of polynomial
+    power1 = 3; % degree of polynomial
     coeff1 = polyfit(tMean(1:iMax),configMean(1:iMax), power1);
     timeFit1 = 0:0.001:ceil(tMean(iMax)*1000)/1000;  %time vector to sample onto
     dataFit1 = polyval(coeff1,timeFit1);
     dataFit1(dataFit1 < 0) = 0; % force data to be non-nagative
 
     % Fit thrust fall off (max --> end),
-    power2 = ; % degree of polynomial
+    power2 = 3; % degree of polynomial
     coeff2 = polyfit(tMean(iMax:end),configMean(iMax:end),power2);
     timeFit2 = timeFit1(end)+0.001:0.001:ceil(tMean(end)*1000)/1000; % time vector; each element is space by 1 ms
     dataFit2 = polyval(coeff2,timeFit2);
