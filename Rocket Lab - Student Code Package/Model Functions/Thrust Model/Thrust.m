@@ -88,7 +88,7 @@ for N = 1:numConfigs % use upper case N to distiguish that it is counting someth
         %% Data Conditioning
         % Find ending offset
         offset = data(mean(end-100:end));
-        front_cut = 1000; % number of data points from the start to cutoff
+        front_cut = 20; % number of data points from the start to cutoff
         if offset < front_cut && offset > 0 % Check that the offset is reasonable, if not just skip the data set by not entering the loop
             % Force negative data to be 0 since that is unphysical
             data(data <= 0) = 0;
@@ -101,7 +101,7 @@ for N = 1:numConfigs % use upper case N to distiguish that it is counting someth
 
             % Find start of test - defined by 5 samples before last sample below 10N prior to max
             %explanation for group: finds 
-            iStart = find(data(1:iMax) > 10, 1, "first"); % Find first sample above or equal to 10N before max
+            iStart = find(data(1:iMax) < 10, 1, "last"); % Find first sample above or equal to 10N before max
             data = data(iStart:end); % Truncate data to begin at the start of the test - note that this means our max index is now wrong
             iMaxNew = iMax - iStart + 1; %new index for max thrust index
             % Trim the data to about 0.5 seconds
@@ -194,7 +194,7 @@ for N = 1:numConfigs % use upper case N to distiguish that it is counting someth
     dataFit1(dataFit1 < 0) = 0; % force data to be non-nagative
 
     % Fit thrust fall off (max --> end),
-    power2 = 3; % degree of polynomial
+    power2 = 8; % degree of polynomial
     coeff2 = polyfit(tMean(iMax:end),configMean(iMax:end),power2);
     timeFit2 = timeFit1(end)+0.001:0.001:ceil(tMean(end)*1000)/1000; % time vector; each element is space by 1 ms
     dataFit2 = polyval(coeff2,timeFit2);

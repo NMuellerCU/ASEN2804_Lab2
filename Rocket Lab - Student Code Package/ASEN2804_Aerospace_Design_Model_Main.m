@@ -159,9 +159,9 @@ addpath(genpath('Model Functions'));
     Plot_Thrust_Data = 1; %Set to 0 to suppress plots for this function or 1 to output plots (Fig 800 - 899)
     [ThrustCurves, Time, ThrustStruct] = Thrust(Plot_Thrust_Data);
 
-% % Call Boost-Ascent Flight Dynamics Model
-%     Plot_Boost_Data = 1; %Set to 0 to suppress plots for this function or 1 to output plots (Fig 900 - 999)
-%     [apogee, hApogee, StateStruct] = BoostAscent(Design_Input, ATMOS, Parasite_Drag_Data, Weight_Data, ThrustCurves, Time, Count, g,Plot_Boost_Data);
+% Call Boost-Ascent Flight Dynamics Model
+    Plot_Boost_Data = 1; %Set to 0 to suppress plots for this function or 1 to output plots (Fig 900 - 999)
+    [apogee, hApogee, StateStruct] = BoostAscent(Design_Input, ATMOS, Parasite_Drag_Data, Weight_Data, ThrustCurves, Time, Count, g,Plot_Boost_Data);
 
 % %% Calculations - Stability Model
 % % Call Static Stability Function

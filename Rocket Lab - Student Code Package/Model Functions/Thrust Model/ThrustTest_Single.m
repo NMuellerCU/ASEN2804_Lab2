@@ -30,7 +30,7 @@ ThrustCurves = zeros(length(Time),1);
 %% List what configuration is being used
 bottleSize = 2000; % [ml]
 waterSize = 1000;% [ml]
-testName = 'Static Test Stand Data/1250mL Bottle/Group16Test01_W0562_B1250'; % Should be a string of the path to the data (including the data file name)
+testName = 'Static Test Stand Data/2000mL Bottle/Group08Test02_W1100_B2000'; % Should be a string of the path to the data (including the data file name)
 
 % /////////////////////////////////////////////////////////////////////////
 % MODIFY THIS SECTION
