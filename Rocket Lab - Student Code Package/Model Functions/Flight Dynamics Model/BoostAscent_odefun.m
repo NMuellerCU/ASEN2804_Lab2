@@ -80,7 +80,7 @@ D = C_D*1/2*rho_a*(V_mag^2)*S_ref;
 %components of force in inertial frame can be found my multiplying sum of magnitude of forces by relative velocity unit vector.
 Fx = (T - (D+f_rails))*hBod_x; %Sum of forces in x inertial frame
 Fy = (T - (D+f_rails))*hBod_y; %Sum of forces in y inertial frame
-Fz = (-T + (D+f_rails+(m*g)))*hBod_z; %Sum of forces in z inertial frame
+Fz = -((T - (D+f_rails))*hBod_z) + (m*g); %Sum of forces in z inertial frame
 %% Calculate the derivatives we need to pass out
 % Change in postition = Acceleration = F/m (Newtons 2nd Law) - This value
 % comes from our physics since the sum of the forces is time dependent

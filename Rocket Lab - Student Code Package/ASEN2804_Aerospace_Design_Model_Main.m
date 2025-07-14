@@ -30,6 +30,7 @@
 %% Clean Workspace and Housekeeping
 clear
 % clearvars
+clc
 close all
 
 % removes warnings for table variable names for a cleaner output
@@ -40,23 +41,23 @@ warning('OFF', 'MATLAB:table:ModifiedAndSavedVarnames')
 addpath(genpath('Design Input Files'));
 addpath(genpath('Model Functions'));
 % 
-% %% Import and Read Aircraft Design File
-% Design_Input_Filename = "Design Input File_Hoke_Blank_V25-00.xlsx";
-% 
-% Design_Input = readtable(Design_Input_Filename,'Sheet','Main_Input','ReadRowNames',true); %Read in Aircraft Geometry File
-% Count = height(Design_Input); %Number of different aircraft configurations in design input file
-% 
-% % Import Airfoil Data File
-% Airfoil = readtable(Design_Input_Filename,'Sheet','Airfoil_Data'); %Read in Airfoil Data
-% 
-% % Import Component Weight and Location Data File
-% Component_Data = readtable(Design_Input_Filename,'Sheet','Component_Data'); %Read in Component Data
-% 
-% % Import Benchmark Aircraft Truth Data
-% Benchmark = readtable(Design_Input_Filename,'Sheet','Benchmark_Truth'); %Read in Benchmark "Truth" Data for model validation only
-% 
-% % Import Material Properties Data
-% Material_Data = readtable(Design_Input_Filename,'Sheet','Materials'); %Read in prototyp material densities for weight model
+%% Import and Read Aircraft Design File
+Design_Input_Filename = "Design Input File_Student_Blank_V25-00.xlsx";
+
+Design_Input = readtable(Design_Input_Filename,'Sheet','Main_Input','ReadRowNames',true); %Read in Aircraft Geometry File
+Count = height(Design_Input); %Number of different aircraft configurations in design input file
+
+% Import Airfoil Data File
+Airfoil = readtable(Design_Input_Filename,'Sheet','Airfoil_Data'); %Read in Airfoil Data
+
+% Import Component Weight and Location Data File
+Component_Data = readtable(Design_Input_Filename,'Sheet','Component_Data'); %Read in Component Data
+
+% Import Benchmark Aircraft Truth Data
+Benchmark = readtable(Design_Input_Filename,'Sheet','Benchmark_Truth'); %Read in Benchmark "Truth" Data for model validation only
+
+% Import Material Properties Data
+Material_Data = readtable(Design_Input_Filename,'Sheet','Materials'); %Read in prototyp material densities for weight model
 
 %% Quick Explainer - Tables
 % This code heavily utilizes tables for data organization. You should think
@@ -103,48 +104,48 @@ addpath(genpath('Model Functions'));
 % creates the tables. We want to help you with the math, not with general
 % coding
 % 
-% %% Caluations - Conditions and Sizing
-% % US Standard Atmophere - uses provided MATLAB File Exchange function
-%     [rho,a,T,P,nu,z]= atmos(Design_Input.altitude_o(:,:)); 
-%     ATMOS = table(rho,a,T,P,nu,z); % Reorganize atmopheric conditions into a table for ease of passing into functions
-%     clearvars rho a T P nu z % Clear original variables now that they are in a table
-%     g = 9.81; %Sets constant acceleration of gravity [m/s]
-% 
-% % Call Wing Geometry Calcuation Function
-%     Plot_WingGeo_Data = 0; %Set to 0 to suppress plots for this function or 1 to output plots (Fig 100 - 199)
-%     WingGeo_Data = WingGeo(Design_Input,Count,Plot_WingGeo_Data); %Calculate specific wing geometry from wing configuration parameters
-% 
-% %% Calculations - Lift and Drag
-% % Call Wing Lift & Drag Model Function
-%     Plot_Wing_Data = 0; %Set to 0 to suppress plots for this function or 1 to output plots (Fig 200 - 299)
-%     [WingLiftModel,AoA,AoA_Count,AirfoilLiftCurve,WingLiftCurve,WingDragCurve] =...
-%         WingLiftDrag(Design_Input,Airfoil,Count,Benchmark,Plot_Wing_Data); 
-% 
-% % Call Parasite Drag Buildup Model Function
-%     Plot_Parasite_Data = 0; %Set to 0 to suppress plots for this function or 1 to output plots (Fig 300 - 399)
-%     [Parasite_Drag_Data,FF_Table,Q_Table,Re_Table] = ...
-%         ParasiteDrag(Design_Input,Airfoil,WingGeo_Data,ATMOS,Count,Plot_Parasite_Data);
-% 
-% % Call Induced Drag Model Function
-%     Plot_Induced_Data = 0; %Set to 0 to suppress plots for this function or 1 to output plots (Fig 400 - 499)
-%     InducedDrag_Data = ...
-%         InducedDrag(Design_Input,WingLiftModel,WingLiftCurve,WingDragCurve,WingGeo_Data,Parasite_Drag_Data,Count,Benchmark,Plot_Induced_Data);
-% 
-% % Call Complete Drag Polar Function
-% Plot_DragPolar_Data = 0; %Set to 0 to suppress plots for this function or 1 to output plots (Fig 500 - 599)
-%     [DragPolar_mod1,DragPolar_mod2,DragPolar_mod3] = ...
-%         DragPolar(Parasite_Drag_Data,InducedDrag_Data,Design_Input,AoA_Count,WingLiftCurve,WingDragCurve,AirfoilLiftCurve,Airfoil,Benchmark,Count,Plot_DragPolar_Data);
-% 
-% % Call L/D Analysis Function
-%     Plot_LD_Data = 0; %Set to 0 to suppress plots for this function or 1 to output plots (Fig 600 - 699)
-%     [LD_mod1,LD_mod2,LD_mod3,LD_benchmark] = ...
-%         LD(Benchmark,DragPolar_mod1,DragPolar_mod2,DragPolar_mod3,WingLiftCurve,WingDragCurve,AoA_Count,Count,Plot_LD_Data);
-% 
-% % Call Weight Model
-%     Plot_Weight_Data = 0; %Set to 0 to suppress plots for this function or 1 to output plots (Fig 700 - 799)
-%     [Weight_Data,CG_Data] = ...
-%         Weight(Design_Input,Count,WingGeo_Data,Airfoil,Material_Data,Component_Data,g,Plot_Weight_Data);
-% 
+%% Caluations - Conditions and Sizing
+% US Standard Atmophere - uses provided MATLAB File Exchange function
+    [rho,a,T,P,nu,z]= atmos(Design_Input.altitude_o(:,:)); 
+    ATMOS = table(rho,a,T,P,nu,z); % Reorganize atmopheric conditions into a table for ease of passing into functions
+    clearvars rho a T P nu z % Clear original variables now that they are in a table
+    g = 9.81; %Sets constant acceleration of gravity [m/s]
+
+% Call Wing Geometry Calcuation Function
+    Plot_WingGeo_Data = 0; %Set to 0 to suppress plots for this function or 1 to output plots (Fig 100 - 199)
+    WingGeo_Data = WingGeo(Design_Input,Count,Plot_WingGeo_Data); %Calculate specific wing geometry from wing configuration parameters
+
+%% Calculations - Lift and Drag
+% Call Wing Lift & Drag Model Function
+    Plot_Wing_Data = 0; %Set to 0 to suppress plots for this function or 1 to output plots (Fig 200 - 299)
+    [WingLiftModel,AoA,AoA_Count,AirfoilLiftCurve,WingLiftCurve,WingDragCurve] =...
+        WingLiftDrag(Design_Input,Airfoil,Count,Benchmark,Plot_Wing_Data); 
+
+% Call Parasite Drag Buildup Model Function
+    Plot_Parasite_Data = 0; %Set to 0 to suppress plots for this function or 1 to output plots (Fig 300 - 399)
+    [Parasite_Drag_Data,FF_Table,Q_Table,Re_Table] = ...
+        ParasiteDrag(Design_Input,Airfoil,WingGeo_Data,ATMOS,Count,Plot_Parasite_Data);
+
+% Call Induced Drag Model Function
+    Plot_Induced_Data = 0; %Set to 0 to suppress plots for this function or 1 to output plots (Fig 400 - 499)
+    InducedDrag_Data = ...
+        InducedDrag(Design_Input,WingLiftModel,WingLiftCurve,WingDragCurve,WingGeo_Data,Parasite_Drag_Data,Count,Benchmark,Plot_Induced_Data);
+
+% Call Complete Drag Polar Function
+Plot_DragPolar_Data = 0; %Set to 0 to suppress plots for this function or 1 to output plots (Fig 500 - 599)
+    [DragPolar_mod1,DragPolar_mod2,DragPolar_mod3] = ...
+        DragPolar(Parasite_Drag_Data,InducedDrag_Data,Design_Input,AoA_Count,WingLiftCurve,WingDragCurve,AirfoilLiftCurve,Airfoil,Benchmark,Count,Plot_DragPolar_Data);
+
+% Call L/D Analysis Function
+    Plot_LD_Data = 0; %Set to 0 to suppress plots for this function or 1 to output plots (Fig 600 - 699)
+    [LD_mod1,LD_mod2,LD_mod3,LD_benchmark] = ...
+        LD(Benchmark,DragPolar_mod1,DragPolar_mod2,DragPolar_mod3,WingLiftCurve,WingDragCurve,AoA_Count,Count,Plot_LD_Data);
+
+% Call Weight Model
+    Plot_Weight_Data = 0; %Set to 0 to suppress plots for this function or 1 to output plots (Fig 700 - 799)
+    [Weight_Data,CG_Data] = ...
+        Weight(Design_Input,Count,WingGeo_Data,Airfoil,Material_Data,Component_Data,g,Plot_Weight_Data);
+
 % %% Calculations - Dynamic Models
 % 
 % % Call Glide Flight Dynamics Model (must select one drag polar model L/D
