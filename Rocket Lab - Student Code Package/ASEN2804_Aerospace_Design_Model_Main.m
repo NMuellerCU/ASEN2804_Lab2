@@ -170,5 +170,6 @@ Plot_DragPolar_Data = 0; %Set to 0 to suppress plots for this function or 1 to o
 %     [Boost_Initial_Stab,Boost_75_Stab,Boost_50_Stab,Boost_25_Stab,Boost_Empty_Stab,Glide_Stab,STAB_SM_SUMMARY,STAB_Xcg_SUMMARY,STAB_Xnp_SUMMARY,STAB_Vh_SUMMARY,STAB_Vv_SUMMARY,STAB_GLIDE_h1_SUMMARY]...
 %         = Stability(Design_Input, Count, CG_Data, WingGeo_Data, GlideData, WingLiftModel, Component_Data,Plot_Stability_Data);
 
+
 %% Reset default color order
 set(0,'DefaultAxesColorOrder','default')

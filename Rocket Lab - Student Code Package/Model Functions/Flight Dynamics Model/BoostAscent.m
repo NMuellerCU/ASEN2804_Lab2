@@ -40,8 +40,8 @@ for n = 1:Count
    % MODIFY THIS SECTION
    % /////////////////////////////////////////////////////////////////////////
    %% Make variables for the constants vector
-   m_empty = .075; %Design_Input.m_bottle; % [kg]
-   m0 = m_empty + waterSize/1000; % Note that the input water volume should be in ml which approx = grams
+   m_empty = Weight_Data.W_empty(n)/g; %Design_Input.m_bottle; % [kg]
+   m0 = Weight_Data.Wo(n)/g; % Note that the input water volume should be in ml which approx = grams
    % /////////////////////////////////////////////////////////////////////////
    % MODIFY THIS SECTION
    % /////////////////////////////////////////////////////////////////////////
