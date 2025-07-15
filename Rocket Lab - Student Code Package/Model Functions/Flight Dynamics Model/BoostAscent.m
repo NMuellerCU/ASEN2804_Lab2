@@ -32,7 +32,7 @@ A_exit = 0.021; % Area of bottle outlet [m^2]
 %% Loop through different configurations
 for n = 1:Count
    %% Pick the correct thrust curve
-   waterSize = Design_Input.Water_Vol(n);
+   waterSize = Design_Input.Water_Vol(n); %
    bottleSize = Design_Input.Bottle_Vol(n)*1000; % Convert to [ml]
    thrustCurveName = [num2str(bottleSize), '_', num2str(waterSize)];
    thrustVec = ThrustCurves.(thrustCurveName); % use parenthasis to index into a table with a variable
@@ -40,8 +40,8 @@ for n = 1:Count
    % MODIFY THIS SECTION
    % /////////////////////////////////////////////////////////////////////////
    %% Make variables for the constants vector
-   m_empty = .125; %Design_Input.m_bottle; % [kg]
-   m0 = 1000; %Design_Input.Water_Vol; % Note that the input water volume should be in ml which approx = grams
+   m_empty = .075; %Design_Input.m_bottle; % [kg]
+   m0 = m_empty + waterSize/1000; % Note that the input water volume should be in ml which approx = grams
    % /////////////////////////////////////////////////////////////////////////
    % MODIFY THIS SECTION
    % /////////////////////////////////////////////////////////////////////////
@@ -61,7 +61,7 @@ for n = 1:Count
    consts(9) = Design_Input.Launch_El(n); % Launch elevation [degrees]
    consts(10) = Design_Input.Launch_Az(n); % Launch Azimuth [degrees], measured CW from north when looking down on the map; also known as compass heading
    %% Make an initial condition state vector (S0)
-   S0(1) = 0; % inertial velocity in x-direction [m/s]
+   S0(1) = 0.0001; % inertial velocity in x-direction [m/s]
    S0(2) = 0; % inertial velocity in y-direction [m/s]
    S0(3) = 0; % inertial velocity in z-direction [m/s]
    S0(4) = 0; % position in x (inertial) [m]
@@ -72,8 +72,8 @@ for n = 1:Count
    % set and event to stop the integration
    opts = odeset('Events', @stoppingPoint, 'RelTol',1e-8);
    % Set a start and max time to integrate over (pick one of the below)
-   %intSpan = [0, 8]; % [s] - Lets matlab pick its timestep (reccomended)
-   intSpan = 0:0.001:5; % [s] - forces output to have 1ms spacing
+   intSpan = [0, 8]; % [s] - Lets matlab pick its timestep (reccomended)
+   %intSpan = 0:0.001:5; % [s] - forces output to have 1ms spacing
    %% Call to ODE 45
    % The @ part is telling ODE45 what our independent vaiable is (t) and
    % what the dependent variables to propigate in time are (S)

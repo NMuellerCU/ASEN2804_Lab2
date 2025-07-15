@@ -42,7 +42,7 @@ addpath(genpath('Design Input Files'));
 addpath(genpath('Model Functions'));
 % 
 %% Import and Read Aircraft Design File
-Design_Input_Filename = "Design Input File_Student_Blank_V25-00.xlsx";
+Design_Input_Filename = "Launch_Angle_Sensitivity_Analysis.xlsx";
 
 Design_Input = readtable(Design_Input_Filename,'Sheet','Main_Input','ReadRowNames',true); %Read in Aircraft Geometry File
 Count = height(Design_Input); %Number of different aircraft configurations in design input file
@@ -52,7 +52,7 @@ Airfoil = readtable(Design_Input_Filename,'Sheet','Airfoil_Data'); %Read in Airf
 
 % Import Component Weight and Location Data File
 Component_Data = readtable(Design_Input_Filename,'Sheet','Component_Data'); %Read in Component Data
-
+    
 % Import Benchmark Aircraft Truth Data
 Benchmark = readtable(Design_Input_Filename,'Sheet','Benchmark_Truth'); %Read in Benchmark "Truth" Data for model validation only
 
@@ -150,11 +150,11 @@ Plot_DragPolar_Data = 0; %Set to 0 to suppress plots for this function or 1 to o
 % 
 % % Call Glide Flight Dynamics Model (must select one drag polar model L/D
 % % data for use in this model)
-%     Plot_Glide_Data = 0; %Set to 0 to suppress plots for this function or 1 to output plots (Fig 1000 - 1099)
-%     LD_Model = LD_mod3; %You must select one LD model output (from the LD function outputs) to utilize for this analysis
-%     apogee = [3.4;3.4;3.4;3.4;3.4;3.4;3.4;3.4]; %Use to set starting altitude of glide if bypassing (add more inputs if comparing more than 8 configurations)
-%     %boost-ascent functions and only analyzing glide performance
-%     [GlideData] = GlideDescent(LD_Model, apogee, Design_Input, ATMOS, Weight_Data, WingLiftModel, WingLiftCurve,WingDragCurve,Count,Plot_Glide_Data); %Must select LD of your best model
+    Plot_Glide_Data = 0; %Set to 0 to suppress plots for this function or 1 to output plots (Fig 1000 - 1099)
+    LD_Model = LD_mod3; %You must select one LD model output (from the LD function outputs) to utilize for this analysis
+    apogee = [3.4;3.4;3.4;3.4;3.4;3.4;3.4;3.4]; %Use to set starting altitude of glide if bypassing (add more inputs if comparing more than 8 configurations)
+    %boost-ascent functions and only analyzing glide performance
+    [GlideData] = GlideDescent(LD_Model, apogee, Design_Input, ATMOS, Weight_Data, WingLiftModel, WingLiftCurve,WingDragCurve,Count,Plot_Glide_Data); %Must select LD of your best model
 
 % Call Thrust Model 
     Plot_Thrust_Data = 1; %Set to 0 to suppress plots for this function or 1 to output plots (Fig 800 - 899)
