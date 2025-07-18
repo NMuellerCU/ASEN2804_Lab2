@@ -38,11 +38,15 @@ m_empty = consts(8); % Weight of the rocket with no water [kg]
 % Launch Direction
 eliv    = consts(9); % Launch elevation [degrees]
 azim    = consts(10); % Launch Azimuth [degrees], measured CW from north when looking down on the map; also known as compass heading
+% wind direction
+windSpeed = consts(11);
+windDir = consts(12);
+Uwind = [cosd(windDir); sind(windDir); 0];
+Vwind = -windSpeed.*Uwind;
+
 % /////////////////////////////////////////////////////////////////////////
 % MODIFY THIS SECTION
 % /////////////////////////////////////////////////////////////////////////
-%% Magnitude of velocity vector (relative = inertial, assume no wind)
-V_mag= sqrt(Vx^2+Vy^2+Vz^2); % Magnitude of velocity [m/s]
 %% Set velocity direction & launch rail friction
 % Constant if still on the rails
 f_rails = 0; % friction due to the rails, preallocate to zero
@@ -50,12 +54,17 @@ if sqrt(x^2+y^2+z^2) <= 0.5 % still on rails
    % We need to add 90 degrees to elevation as it is normally measured
    % from the horizon but the spherical to cartiesian coordinate
    % conversion measures from the positive-z (strait down)
+   Vrel = [Vx;Vy;Vz];
+   V_mag = norm(Vrel);
    hBod_x = sind(eliv+90)*cosd(azim); % heading of the body (inertial pointing direction of the body)
    hBod_y = sind(eliv+90)*sind(azim);
    hBod_z = cosd(eliv+90);
+   hVrel = [hBod_x; hBod_y; hBod_z];
    f_rails = mu_k*m*g; % making friction non-zero only if on the rails, assuming the force on the rails is the full weight (this is a strange assumption but attempts to account for extra forces during launch)
 else %free flight, velocity is into the relative wind
-   hVrel = [Vx,Vy,Vz]./V_mag; % relative velocity unit vector (direction of vector)
+   Vrel = [Vx;Vy;Vz] - Vwind;
+   V_mag = norm(Vrel);
+   hVrel = Vrel./V_mag; % relative velocity unit vector (direction of vector)
    hBod_x = hVrel(1); % x component of relative velocity unit vector
    hBod_y = hVrel(2); % y component of relative velocity unit vector
    hBod_z = hVrel(3); % z component of relative velocity unit vector
@@ -69,6 +78,7 @@ else
 end
 %% Calculate total drag
 D = C_D*1/2*rho_a*(V_mag^2)*S_ref;
+F_drag = -D*hVrel;
 %% Sum the forces
 % Assume that all forces exept gravity act in (or against) the direction
 % that the body is pointing. This means that the force in any component
@@ -78,15 +88,20 @@ D = C_D*1/2*rho_a*(V_mag^2)*S_ref;
 % Sum of the forces
 %Since forces T, D, f_rails are always aligned w/ relative velocity vector (body frame),
 %components of force in inertial frame can be found my multiplying sum of magnitude of forces by relative velocity unit vector.
-Fx = (T - (D+f_rails))*hBod_x; %Sum of forces in x inertial frame
-Fy = (T - (D+f_rails))*hBod_y; %Sum of forces in y inertial frame
-Fz = ((T - (D+f_rails))*hBod_z) + (m*g); %Sum of forces in z inertial frame
+% Fx = (T - (D+f_rails))*hBod_x; %Sum of forces in x inertial frame
+% Fy = (T - (D+f_rails))*hBod_y; %Sum of forces in y inertial frame
+% Fz = ((T - (D+f_rails))*hBod_z) + (m*g); %Sum of forces in z inertial frame
+F_thrust = T* [hBod_x; hBod_y; hBod_z];
+F_rail = -f_rails * [hBod_x; hBod_y; hBod_z];
+F_grav = [0;0;m*g];
+
+F_net = F_drag + F_thrust + F_rail + F_grav;
 %% Calculate the derivatives we need to pass out
 % Change in postition = Acceleration = F/m (Newtons 2nd Law) - This value
 % comes from our physics since the sum of the forces is time dependent
-dVdt_x = Fx/m;
-dVdt_y = Fy/m;
-dVdt_z = Fz/m;
+dVdt_x = F_net(1)/m;
+dVdt_y = F_net(2)/m;
+dVdt_z = F_net(3)/m;
 % Now we do some error checking:
 % If we are not yet producing enough thrust to get a positive component of
 % acceleration while very near the base of the the launcher, this means

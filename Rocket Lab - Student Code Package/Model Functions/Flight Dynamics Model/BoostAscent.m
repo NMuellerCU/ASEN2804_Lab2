@@ -1,4 +1,4 @@
-function [apogee, hApogee, stateStruct] = BoostAscent(Design_Input, ATMOS, Parasite_Drag_Data, Weight_Data, ThrustCurves, Time, Count, g,Plot_Boost_Data)
+function [apogee, hApogee, stateStruct] = BoostAscent(Design_Input, ATMOS, Parasite_Drag_Data, Weight_Data, ThrustCurves, Time, Count, g,Plot_Boost_Data, windSpeed, windDir)
 %% BoostAscent Summary:
 % The main purpose of this function is to set up for the call to ODE 45 to
 % propigate our eqations of motion, and then to format the output of ODE 45
@@ -11,7 +11,7 @@ function [apogee, hApogee, stateStruct] = BoostAscent(Design_Input, ATMOS, Paras
 %
 % hApogee:
 %   A table of inertial heading vectors in cartisian coordinates for each
-%   case input
+%   case input 
 %
 % stateStruct:
 %   A structure containing the full output data from ODE45 for each case
@@ -23,7 +23,7 @@ function [apogee, hApogee, stateStruct] = BoostAscent(Design_Input, ATMOS, Paras
 apogee = zeros(Count,1); % Height of apogee above the ground (this will be postitive despite the coordinate system) [m]
 hApogee = zeros(Count,3); % Body heading/pointing unit vector at apogee
 %% Preallocate ODE varaibles
-consts = zeros(10, 1);
+consts = zeros(12, 1);
 S0 = zeros(7, 1);
 %% Some useful constants
 rho_w = 1000; % Density of water [kg/m^3]
@@ -60,6 +60,8 @@ for n = 1:Count
    % % Launch Direction
    consts(9) = Design_Input.Launch_El(n); % Launch elevation [degrees]
    consts(10) = Design_Input.Launch_Az(n); % Launch Azimuth [degrees], measured CW from north when looking down on the map; also known as compass heading
+   consts(11) = windSpeed;
+   consts(12) = windDir;
    %% Make an initial condition state vector (S0)
    S0(1) = 0.0001; % inertial velocity in x-direction [m/s]
    S0(2) = 0; % inertial velocity in y-direction [m/s]
@@ -129,6 +131,21 @@ if Plot_Boost_Data == 1
   
    %Reset default color order
    set(0,'DefaultAxesColorOrder','default')
+
+   figure(901);
+   hold on;
+   fields = fieldnames(stateStruct);
+   for n = 1:Count
+       S = stateStruct.(fields{n}).data;
+       plot3(S(:,4), S(:,5), -S(:,6),DisplayName=Design_Input.Properties.RowNames{n},Color=cmap(n, :) );
+   end
+   xlabel('X [m]');
+   ylabel('Y [m]');
+   zlabel('Z [m]');
+   legend('Location','best')
+   grid on;
+   hold off;
 end
- 
+
+
 

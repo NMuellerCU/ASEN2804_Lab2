@@ -162,7 +162,9 @@ Plot_DragPolar_Data = 0; %Set to 0 to suppress plots for this function or 1 to o
 
 % Call Boost-Ascent Flight Dynamics Model
     Plot_Boost_Data = 1; %Set to 0 to suppress plots for this function or 1 to output plots (Fig 900 - 999)
-    [apogee, hApogee, StateStruct] = BoostAscent(Design_Input, ATMOS, Parasite_Drag_Data, Weight_Data, ThrustCurves, Time, Count, g,Plot_Boost_Data);
+    windSpeed = 4; %m/s
+    windDir = 45; %degrees clockwise from North
+    [apogee, hApogee, StateStruct] = BoostAscent(Design_Input, ATMOS, Parasite_Drag_Data, Weight_Data, ThrustCurves, Time, Count, g,Plot_Boost_Data, windSpeed, windDir);
 
 % %% Calculations - Stability Model
 % % Call Static Stability Function
